@@ -1,0 +1,6 @@
+{
+  "projectname": "express",
+  "setting": {
+    "compileHotReLoad": true
+  }
+}
