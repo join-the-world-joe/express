@@ -1,13 +1,25 @@
 {
   "pages": [
-    "screen/login/login"
+    "screen/home/home",    
+    "screen/login/login",
+    "screen/register/register",
+    "screen/layout/layout"
   ],
+  "tabBar": {
+    "list": [{
+      "pagePath": "screen/layout/layout",
+      "text": "首页"
+    }, {
+      "pagePath": "screen/login/login",
+      "text": "日志"
+    }]
+  },
   "window": {
-    "navigationBarTextStyle": "black",
-    "navigationStyle": "custom"
+    "navigationBarBackgroundColor": "#eeeeee",
+    "navigationBarTitleText": "万事通配送小程序",
+    "navigationBarTextStyle": "black"
   },
   "style": "v2",
-  "renderer": "skyline",
   "rendererOptions": {
     "skyline": {
       "defaultDisplayBlock": true,

@@ -1,5 +1,8 @@
 {
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "title"
+  },
   "usingComponents": {
-    "navigation-bar": "/components/navigation-bar/navigation-bar"
   }
 }

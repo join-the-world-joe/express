@@ -1,0 +1,5 @@
+<view class="container">
+<view class="child1"></view>
+<view class="child2"></view>
+<view class="child3"></view>
+</view>

@@ -1,6 +1,6 @@
 <view class="_container">
   <view>
-    <text class="title">手机验证码登录</text>
+    <text class="title">注册新用户</text>
   </view>
   <view class="_row">
     <view class="boxLeft" >手机号</view> 
@@ -17,9 +17,6 @@
     <button class="send" bind:tap="sendVerificationCode" size="mini">获取</button>
   </view>
   <view>
-    <button class="loginButton" bind:tap="login" type="primary">登录</button>
-  </view>
-  <view  class="guess">
-  <text>访客?请点击</text> <text class="register" bind:tap="register">注册</text>
+    <button class="loginButton" bind:tap="login" type="primary">注册</button>
   </view>
 </view>

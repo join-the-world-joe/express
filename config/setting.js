@@ -1,5 +1,5 @@
-const url = 'ws://127.0.0.1:10001/ws'
-const encryption = false
+const url = 'ws://127.0.0.1:10002/ws'
+const encryption = true
 const key = '3dd19414e91ac01b'
 const iv = '2624b9a9c447e587'
 const publicKey = `
