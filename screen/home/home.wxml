@@ -1,1 +1,29 @@
-<button bind:tap="jump">switch</button>
+<scroll-view class="container1" scroll-y>
+  <swiper indicator-dots  indicator-active-color='black' indicator-color='white' autoplay interval='2000' circular>
+    <block wx:for="{{imageUrls}}">
+      <swiper-item>
+        <image src="{{item}}" />
+      </swiper-item>    
+    </block>
+  </swiper>
+
+  <view class="container2">
+    <view class="container3">
+      <view bind:tap="item0" style="color:{{contentIndex==0 ? 'blue' : 'blac'}}">今日特价</view>
+      <view class="item" bind:tap="item1" style="color:{{contentIndex==1 ? 'blue' : 'blac'}}">人气热销</view>
+      <view class="item" bind:tap="item2" style="color:{{contentIndex==2 ? 'blue' : 'blac'}}">烧烤必备</view>
+      <view class="item" bind:tap="item3" style="color:{{contentIndex==3 ? 'blue' : 'blac'}}">畅销零食</view>
+    </view>
+  </view>
+
+  <view class="container4">
+    <vcard price="10" imagePath="/asset/image/1.jpg"></vcard>
+    <vcard price="10" imagePath="/asset/image/2.jpg"></vcard>
+    <vcard price="10" imagePath="/asset/image/3.jpg"></vcard>
+    <vcard price="10" imagePath="/asset/image/4.jpg"></vcard>
+    <vcard price="10" imagePath="/asset/image/5.jpg"></vcard>
+    <vcard price="10" imagePath="/asset/image/6.jpg"></vcard>
+  </view>
+
+
+</scroll-view>

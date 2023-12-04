@@ -19,12 +19,12 @@ page {
 .child2 {
   width: 200px;
   height: 100px;
-  background-color: sandybrown;
+  background-color:#0000ff;
   margin-bottom: 20px;
 }
 .child3 {
   width: 200px;
   height: 100px;
-  background-color: seagreen;
+  background-color: #000000;
   margin-bottom: 20px;
 }

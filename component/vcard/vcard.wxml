@@ -1,0 +1,8 @@
+<!--component/vcard/vcard.wxml-->
+<!-- <text>vcard.price:{{price}}</text> -->
+
+<view class="container">
+  <!-- <text>price={{price}}</text> -->
+  <!-- <text>imagePath={{imagePath}}</text> -->
+  <image src="{{imagePath}}"></image>
+</view>

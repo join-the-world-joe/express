@@ -6,7 +6,7 @@ page {
   font-size: 25px;
   font-weight: 900;
 }
-._container {
+.container {
   margin-top: -50px;
   display: flex;
   flex-direction: column;
