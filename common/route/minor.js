@@ -5,6 +5,17 @@ class Minor {
     this.SMS = sms.Instance
     this.Account = account.Instance
   }
+
+  getName(input) {
+    switch (key) {
+      case value:
+        
+        break;
+    
+      default:
+        break;
+    }
+  }
 }
 
 var _instance =  new Minor()

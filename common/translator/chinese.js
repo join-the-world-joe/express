@@ -12,6 +12,7 @@ class Chinese {
     this._language[language.userRecordNotFound] = "未注册"
     this._language[language.verificationCodeNotInCache] = "验证码错误"
     this._language[language.illegalVerificationCode] = "无效的验证码"
+    this._language[language.request_to_send_sms_message] = '获取'
   }
   GetName() {
     return this._name

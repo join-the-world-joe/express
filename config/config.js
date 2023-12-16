@@ -7,6 +7,13 @@ class Config {
     this._aesIV = setting.iv
     this._rsaPublicKey = setting.publicKey
     this._rsaPrivateKey = setting.privateKey
+    this._lengthOfVerificationCode = 4
+    this._lengthOfPhoneNumber = 11
+    this._debug = true
+  }
+
+  getDebug() {
+    return this._debug
   }
   GetUrl() {
     return this._url
@@ -25,6 +32,12 @@ class Config {
   }
   GetRSAPrivateKey() {
     return this._rsaPrivateKey
+  }
+  GetLengthOfVerificationCode() {
+    return this._lengthOfVerificationCode
+  }
+  GetLengthOfPhoneNumber() {
+    return this._lengthOfPhoneNumber
   }
 }
 

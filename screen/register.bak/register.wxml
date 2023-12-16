@@ -1,0 +1,22 @@
+<view class="_container">
+  <view>
+    <text class="title">注册新用户</text>
+  </view>
+  <view class="_row">
+    <view class="boxLeft" >手机号</view> 
+    <view>
+      <input class="inputPhoneNumber" bindinput="onPhoneNumberChange" maxlength="11"   value="{{phoneNumber}}" placeholder-style="font-size:20px" placeholder="请输入手机号"/>
+    </view>
+    <view class="placeholder"></view>
+  </view>
+  <view class="_row">
+    <view class="boxLeft">验证码</view> 
+    <view>
+      <input class="inputCode" value="{{code}}" bindinput="onCodeChange" placeholder-style="font-size:20px" maxlength="4" placeholder="请输入短信验证码"/>
+    </view>
+    <button class="send" bind:tap="sendVerificationCode" size="mini">获取</button>
+  </view>
+  <view>
+    <button class="loginButton" bind:tap="login" type="primary">注册</button>
+  </view>
+</view>

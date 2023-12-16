@@ -1,25 +1,23 @@
 <view class="container">
-  <view>
-    <text class="title">手机验证码登录</text>
+  <view class="title">手机验证码登录</view>
+  <view class="space1"></view>
+  <view class="row">
+    <view class="label">手机号</view>
+    <input maxlength="11"  bindinput="onPhoneNumberChange" type="number" placeholder-style="font-size:20px"   placeholder="请输入手机号"/>
   </view>
-  <view class="_row">
-    <view class="boxLeft" >手机号</view> 
-    <view>
-      <input class="inputPhoneNumber" bindinput="onPhoneNumberChange" maxlength="11"   value="{{phoneNumber}}" placeholder-style="font-size:20px" placeholder="请输入手机号"/>
-    </view>
-    <view class="placeholder"></view>
+  <view class="line"></view>
+  <view class="row">
+    <view class="label">验证码</view>
+    <input maxlength="4" bindinput="onVerificationCodeChange"  type="number" placeholder-class="placeholder" placeholder="请输入短信验证码" />
+    <button class="sms_button"  disabled="{{verificationCodeRequested}}"  type="primary" bind:tap="request_to_send_sms" size="mini">{{smsButtonLabel}}</button>
   </view>
-  <view class="_row">
-    <view class="boxLeft">验证码</view> 
-    <view>
-      <input class="inputCode" value="{{code}}" bindinput="onCodeChange" placeholder-style="font-size:20px" maxlength="4" placeholder="请输入短信验证码"/>
-    </view>
-    <button class="send" bind:tap="sendVerificationCode" size="mini">获取</button>
+  <view class="line"></view>
+  <view class="submit_button_container">
+    <button class="submit_button" bind:tap="request_to_login" disabled="{{submitButtonDisabled}}" type="primary">登录</button>
   </view>
-  <view>
-    <button class="loginButton" bind:tap="login" type="primary">登录</button>
+  <view class="guess_container">
+    <view>访客?请点击</view>
+    <view bind:tap="navigate_to_register" class='register_label'>注册</view>
   </view>
-  <view  class="guess">
-  <text>访客?请点击</text> <text class="register" bind:tap="register">注册</text>
-  </view>
+  <view class="space2"></view>
 </view>

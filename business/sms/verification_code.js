@@ -39,7 +39,7 @@ class Response {
   }
   FromJson(json) { // modify itself
     try {
-      console.log('VerificationCode.Response.FromJson.json: ', json)
+      // console.log('VerificationCode.Response.FromJson.json: ', json)
       if (json != undefined) {
         if (json.code != undefined) {
           this._code = json.code

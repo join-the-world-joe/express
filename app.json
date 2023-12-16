@@ -1,11 +1,12 @@
 {
   "pages": [
+    "screen/login/login",
+    "screen/login.bak/login",
+    "screen/register/register",
     "screen/home/home",    
     "screen/category/category",
     "screen/cart/cart",
     "screen/account/account",
-    "screen/login/login",
-    "screen/register/register",
     "screen/layout/layout"
   ],
   "tabBar": {
@@ -34,12 +35,12 @@
       "selectedIconPath": "asset/icon/user_sharp96.png"
     }]
   },
+  "style": "v2",
   "window": {
     "navigationBarBackgroundColor": "#eeeeee",
-    "navigationBarTitleText": "万事通配送小程序",
+    "navigationBarTitleText": "万家商城小程序",
     "navigationBarTextStyle": "black"
   },
-  "style": "v2",
   "rendererOptions": {
     "skyline": {
       "defaultDisplayBlock": true,

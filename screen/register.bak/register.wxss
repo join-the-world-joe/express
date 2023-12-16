@@ -1,0 +1,58 @@
+/* screen/login/login.wxss */
+page {
+  height: 100%;
+}
+.title {
+  font-size: 25px;
+  font-weight: 900;
+}
+._container {
+  margin-top: -200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+  height: 100%;
+}
+._row {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+}
+.boxLeft {
+  font-size: 22px;
+  width: 70px;
+  margin-left: 15px;
+}
+.send {
+  width: 50px;
+  font-size: 5px;
+}
+.inputPhoneNumber {
+  width:150px;
+  font-size: 20px;
+}
+.inputCode {
+  width: 170px;
+  font-size: 20px;
+}
+.placeholder {
+  width: 75px;
+}
+.loginButton {
+  margin-top: 20px;
+}
+.guess {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  font-size: 20px;
+  align-items: flex-end;
+}
+.register {
+  font-size: 25px;
+}

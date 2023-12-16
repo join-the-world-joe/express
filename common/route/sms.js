@@ -9,6 +9,17 @@ class SMS {
   GetVerificationCodeResponse() {
     return this._verificationCodeResponse
   }
+
+  getName(input) {
+    switch (input) {
+      case this._verificationCodeRequest:
+        return 'verificationCodeRequest';
+      case this._verificationCodeResponse:
+        return 'verificationCodeResponse';
+      default:
+        return 'unknown';
+    }
+  }
 }
 
 var _instance = new SMS()

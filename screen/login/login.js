@@ -1,124 +1,152 @@
-const language = require('../../common/translator/language')
-var translator = require('../../common/translator/translator')
-var rateLimiter = require('../../framework/rate_limiter')
+const major = require("../../common/route/major")
+var sms = require('../../common/route/sms')
+var account = require('../../common/route/account')
+var payload = require('../../framework/packet_client')
 var header = require('../../framework/header')
-var bSMSVC = require('../../business/sms/verification_code')
-var major = require("../../common/route/major")
-var minor = require("../../common/route/minor")
-var payload = require("../../framework/packet_client")
+var sms_business = require('../../business/sms/verification_code')
 var runtime = require('../../runtime/runtime')
-var aes = require('../../plugin/crypto/aes')
-const code = require('../../common/code/code')
-var bLogin = require('../../business/account/login')
-
+var code = require('../../common/code/code')
+var log =  require('../../utils/log')
+var translator = require('../../common/translator/translator')
+var language = require('../../common/translator/language')
+var config = require('../../config/config')
 Page({
+
+  /**
+   * Page initial data
+   */
   data: {
-    title: translator.Instance.Translate(language.titleOfMiniProgram),
-    phoneNumber: "",
-    code: "",
-  },
-  onCodeChange(e) {
-    this.setData({
-      code: e.detail.value
-    })
+    from: 'login',
+    phoneNumber: '',
+    verificationCode: '',
+    submitButtonDisabled: true,
+    countdownNumber: 60,
+    verificationCodeRequested: false,
+    smsButtonLabel: '获取',
   },
   onPhoneNumberChange(e) {
     this.setData({
       phoneNumber: e.detail.value
     })
-  },
-  smsHandler(packet) {
-    console.log('smsHandler.packet: ', packet)
-    var response = bSMSVC.CreateResponseInstance().FromJson(packet.GetBody())
-    var c = response.GetCode()
-    if ( c == code.Instance.OK) {
-      // success
-    } else if (c == code.Instance.InvalidDataType ) {
-      wx.showModal({
-        title: translator.Instance.Translate(language.titleOfDialog),
-        content: translator.Instance.Translate(language.phoneNumberInvalid),
-        showCancel: false,
-        success (res) {
-          if (res.confirm) {
-            console.log('press confirm')
-          }
-        }
+    if(this.data.phoneNumber.length >= config.Instance.GetLengthOfPhoneNumber() && this.data.verificationCode >= config.Instance.GetLengthOfVerificationCode()) {
+      this.setData({
+        submitButtonDisabled: false,
       })
-      // phone number is invalid
     } else {
-      // error code
+      if (!this.data.submitButtonDisabled) {
+        this.setData({
+          submitButtonDisabled: true,
+        })
+      }
     }
   },
-  register() {
-    console.log('register')
-    wx.navigateTo({
-      url: '/screen/register/register',
+  onVerificationCodeChange(e) {
+    this.setData({
+      verificationCode: e.detail.value
     })
-  },
-  loginHandler(packet) {
-    console.log('loginHandler.packet:', packet)
-    var response = bLogin.CreateResponseInstance().FromJson(packet.GetBody())
-    var c = response.GetCode()
-    if ( c == code.Instance.OK) {
-      // success
-    } else if (c == code.Instance.InvalidData ) {
-      // phone number is invalid
-      wx.showModal({
-        title: translator.Instance.Translate(language.titleOfDialog),
-        content: translator.Instance.Translate(language.verificationCodeNotInCache),
-        showCancel: false,
-        success (res) {
-          if (res.confirm) {
-            console.log('press confirm')
-          }
-        }
-      })
-    } else if (c == code.Instance.EntryNotFound) {
-      wx.showModal({
-        title: translator.Instance.Translate(language.titleOfDialog),
-        content: translator.Instance.Translate(language.userRecordNotFound),
-        showCancel: false,
-        success (res) {
-          if (res.confirm) {
-            console.log('press confirm')
-          }
-        }
+    console.log(this.data.phoneNumber.length)
+    console.log(this.data.verificationCode)
+    if(this.data.phoneNumber.length >= config.Instance.GetLengthOfPhoneNumber() && this.data.verificationCode.length >= config.Instance.GetLengthOfVerificationCode()) {
+      this.setData({
+        submitButtonDisabled: false,
       })
     } else {
-      // error code
+      if (!this.data.submitButtonDisabled) {
+        this.setData({
+          submitButtonDisabled: true,
+        })
+      }
     }
   },
   observe(packet) {
     try{
+      var caller = 'observe';
       var ma = packet.GetHeader().GetMajor()
       var mi = packet.GetHeader().GetMinor()
-      console.log('Login.observe: major: ', ma, ", minor: ", mi)
-      console.log(major.Instance.SMS, minor.Instance.SMS.GetVerificationCodeResponse())
-      if(ma == major.Instance.SMS && mi == minor.Instance.SMS.GetVerificationCodeResponse()) {
+      
+      log.Instance.Debug({
+        major: ma,
+        minor: mi,
+        from: this.data.from,
+        caller: caller,
+        message: 'responsed',
+      })
+      
+      if(ma == major.Instance.SMS && mi == sms.Instance.GetVerificationCodeResponse()) {
         this.smsHandler(packet)
-      } else if (ma == major.Instance.Account && mi == minor.Instance.Account.GetLoginResponse()) {
+      } else if (ma == major.Instance.Account && mi == account.Instance.GetLoginResponse()) {
         this.loginHandler(packet)
       } else {
-        console.log('Login.observe.warning, major: ', ma, ", minor: ", mi)
+        log.Instance.Debug({
+          major: ma,
+          minor: mi,
+          from: this.data.from,
+          caller: caller,
+         message: 'not matched',
+        })
       }
     } catch(e) {
-      console.log('Login.observe failure, err: ', e)
+      log.Instance.Debug({
+        major: ma,
+        minor: mi,
+        from: this.data.from,
+        caller: caller,
+        message: 'failure, err: ' + e,
+      })
     } finally {
       return 
     }
   },
-  sendVerificationCode() {
-    var packet = payload.CreateInstance()
-    var hdr = header.CreateInstance()
-    hdr.SetMajor(major.Instance.SMS)
-    hdr.SetMinor(minor.Instance.SMS.GetVerificationCodeRequest())
-    var request = bSMSVC.CreateRequestInstance(bSMSVC.Behavior.Login(), "86", this.data.phoneNumber)
-    packet.SetHeader(hdr)
-    packet.SetBody(request)
-    runtime.Instance.SendRequest(packet.ToJson())
+  smsHandler(packet) {
+    var caller = 'smsHandler'
+    var response = sms_business.CreateResponseInstance().FromJson(packet.GetBody())
+    var c = response.GetCode()
+    log.Instance.Debug({
+      major: packet.GetHeader().GetMajor(),
+      minor: packet.GetHeader().GetMinor(),
+      from: this.data.from,
+      caller: caller,
+      message: 'code: ' + c,
+   })
+    if ( c == code.Instance.OK) {
+      // success
+    } else {
+      this.setData({
+        smsButtonLabel: '获取',
+        verificationCodeRequested: false,
+        countdownNumber: 0,
+      })
+      if (c == code.Instance.InvalidDataType ) {
+        wx.showModal({
+          title: translator.Instance.Translate(language.titleOfDialog),
+          content: translator.Instance.Translate(language.phoneNumberInvalid),
+          showCancel: false,
+          success (res) {
+            if (res.confirm) {
+              console.log('press confirm')
+            }
+          }
+        })
+        // phone number is invalid
+      } else {
+        // error code
+      }
+    }
   },
-  login() {
-    if (this.data.phoneNumber.length < 11) {
+  navigate_to_register() {
+    console.log('request_to_register')
+    wx.navigateTo({
+      url: '/screen/register/register',
+    })
+  },
+  request_to_login() {
+    
+  },
+  request_to_send_sms() {
+    if(this.data.verificationCodeRequested) {
+      return
+    }
+    if(this.data.phoneNumber.length < 11) {
       wx.showModal({
         title: translator.Instance.Translate(language.titleOfDialog),
         content: translator.Instance.Translate(language.phoneNumberInvalid),
@@ -131,37 +159,63 @@ Page({
       })
       return
     }
-    if(this.data.code < 3) {
-      wx.showModal({
-        title: translator.Instance.Translate(language.titleOfDialog),
-        content: translator.Instance.Translate(language.illegalVerificationCode),
-        showCancel: false,
-        success (res) {
-          if (res.confirm) {
-            console.log('press confirm')
+    try {
+      var caller = 'request_to_send_sms'
+      var packet = payload.CreateInstance()
+      var hdr = header.CreateInstance()
+      var ma = major.Instance.SMS
+      var mi = sms.Instance.GetVerificationCodeRequest()
+      var behavior = sms_business.Behavior.Register()
+      var phoneNumber = this.data.phoneNumber
+      var request = sms_business.CreateRequestInstance(behavior, "86", phoneNumber)
+      hdr.SetMajor(ma)
+      hdr.SetMinor(mi)
+      packet.SetHeader(hdr)
+      packet.SetBody(request)
+      runtime.Instance.Request({packet:packet, from: 'login', caller:'request_to_send_sms'})
+
+      var that = this
+      this.setData({
+        verificationCodeRequested: true,
+        countdownNumber: 60,
+      });
+      var timer = setInterval(
+        function() {
+          var number = that.data.countdownNumber
+          number = number - 1
+          // console.log('number: ', number)
+          if (number >= 0) {
+            that.setData({
+              smsButtonLabel: number,
+              countdownNumber: number,
+            });
           }
-        }
+          if (number <= 0) {
+            console.log('close timer')
+            clearInterval(timer)
+            that.setData({
+              smsButtonLabel:translator.Instance.Translate(language.request_to_send_sms_message),
+              verificationCodeRequested: false,
+            })
+          }
+        }, 1000,
+      );
+    } catch(e) {
+      log.Instance.Debug({
+        major: ma,
+        minor: mi,
+        from: this.data.from,
+        caller: caller,
+        message: 'failure, err: ' + e,
       })
-      return
     }
-    var packet = payload.CreateInstance()
-    console.log("login, number: ", this.data.phoneNumber, ", code: ", parseInt(this.data.code))
-    var hdr = header.CreateInstance()
-    hdr.SetMajor(major.Instance.Account)
-    hdr.SetMinor(minor.Instance.SMS.GetVerificationCodeRequest())
-    var request = bLogin.CreateRequestInstance()
-    request.SetBehavior(2)
-    request.SetCountryCode('86')
-    request.SetPhoneNumber(this.data.phoneNumber)
-    request.SetVerificationCode(this.data.code)
-    packet.SetHeader(hdr)
-    packet.SetBody(request)
-    runtime.Instance.SendRequest(packet.ToJson())
   },
+
   /**
    * Lifecycle function--Called when page load
    */
   onLoad(options) {
+    console.log('onLoad');
     runtime.Instance.Setup()
     runtime.Instance.SetObserve(this.observe)
   },
@@ -177,21 +231,24 @@ Page({
    * Lifecycle function--Called when page show
    */
   onShow() {
-
+    console.log('login.onShow');
+    runtime.Instance.SetObserve(this.observe)
   },
 
   /**
    * Lifecycle function--Called when page hide
    */
   onHide() {
-
+    console.log('onhide')
   },
 
   /**
    * Lifecycle function--Called when page unload
    */
   onUnload() {
-
+    this.setData({
+      countdownNumber: 0,
+    })
   },
 
   /**

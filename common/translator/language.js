@@ -5,4 +5,5 @@ module.exports = {
   userRecordNotFound: "no such user record in database",
   verificationCodeNotInCache: "the verification code not in cache",
   illegalVerificationCode: "the verification code is illegal",
+  request_to_send_sms_message: 'request to send sms message',
 }

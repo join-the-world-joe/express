@@ -4,6 +4,7 @@ var websock = require('../framework/websocket')
 var rateLimiter = require('../framework/rate_limiter')
 var convert = require('../utils/convert')
 var payload = require('../framework/packet_client')
+var log = require('../utils/log')
 
 class Runtime {
   constructor() {
@@ -24,7 +25,7 @@ class Runtime {
       } else {
         packet.FromJson(convert.CreateInstance().Int8ArrayToString(new Int8Array(input.data)))
       }
-      console.log('onMessage: ', packet)
+      // console.log('onMessage: ', packet)
       if (this._observe != null) {
         this._observe(packet)
         return
@@ -59,7 +60,7 @@ class Runtime {
   }
 
   onRequestSuccess(res) {
-    console.log("Runtime.onRequestSuccess")
+    // console.log("Runtime.onRequestSuccess")
   }
 
   onRequestFailure(res) {
@@ -67,17 +68,18 @@ class Runtime {
   }
 
   onRequestComplete(res) {
-    console.log("Runtime.onRequestComplete")
+    // console.log("Runtime.onRequestComplete")
   }
 
-  SendRequest(data) {
-    var output = data
+  Request({packet, from, caller}) {
+    var output = packet.ToJson()
     try{
       // if(!this._initialized || !this._connectivity) {
       //   this.Setup()
       // }
+      
       if (config.Instance.GetEncryption()) {
-        output = aes.Instance.encrypt(data)
+        output = aes.Instance.encrypt(output)
       }
 
       this._websock.Send(
@@ -86,6 +88,13 @@ class Runtime {
         (res) => this.onRequestFailure(res),
         (res) => this.onRequestComplete(res),
       )
+      log.Instance.Debug({
+        major: packet.GetHeader().GetMajor(),
+        minor: packet.GetHeader().GetMinor(),
+        from: from,
+        caller: caller,
+        message: 'requested',
+     })
       return
     } catch(e) {
       console.log("Runtime.SendRequest failure, err: ", e)
